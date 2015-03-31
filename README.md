@@ -2,6 +2,18 @@
 
 Spring GWT-RPC is insprired by the `gwtrpc-spring` project. Its aim is to provide a simplified and updated version of the latter.
 
+## Get it
+
+Spring GWT-RPC is released on Maven Central:
+
+```xml
+<dependency>
+    <groupId>fr.sertelon.spring</groupId>
+    <artifactId>spring-gwtrpc</artifactId>
+    <version>1.0.0</version>
+</dependency>
+```
+
 ## Features
 
 ### Dispatch to Spring beans
@@ -21,11 +33,11 @@ To use it you just have to declare this Servlet in the `web.xml` of your project
 </servlet-mapping>
 ```
 
-Then all you have to do is to declare your `RemoteServiceImpl` in your Spring configuration thanks `@Component` annotation, or via XML configuration.
+Then all you have to do is to declare your `RemoteServiceImpl` in your Spring configuration thanks to `@Component` annotation, or via XML configuration.
 
 ### Reverse Proxy support for Serialization Policy
 
-Spring GWT-RPC also provides out-of-the-box Reverse Proxy support for finding its `Serialization Policy`.
+Spring GWT-RPC also provides out-of-the-box Reverse Proxy support for helping GWT find its `Serialization Policy`.
 
 Suppose you have the following RP configuration: `http://my.site/hello/gwtapp -> http://localhost:8080/gwtapp`, GWT will complain about missing Serialization Policy because it will try to find it at `/hello/gwtapp/*.gwt.rpc` instead of `/gwtapp/*.gwt.rpc`.
 
