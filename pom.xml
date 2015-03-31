@@ -9,7 +9,7 @@
 
 	<groupId>fr.sertelon.spring</groupId>
 	<artifactId>spring-gwtrpc</artifactId>
-	<version>1.0.0</version>
+	<version>1.0.1-SNAPSHOT</version>
 
     <name>Spring GWT-RPC</name>
     <description>Spring integration for GWT-RPC</description>
