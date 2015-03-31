@@ -1,0 +1,114 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Spring-gwtrpc by rsertelon</title>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="javascripts/respond.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <!--[if lt IE 8]>
+    <link rel="stylesheet" href="stylesheets/ie.css">
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+  </head>
+  <body>
+      <div id="header">
+        <nav>
+          <li class="fork"><a href="https://github.com/rsertelon/spring-gwtrpc">View On GitHub</a></li>
+          <li class="downloads"><a href="https://github.com/rsertelon/spring-gwtrpc/zipball/master">ZIP</a></li>
+          <li class="downloads"><a href="https://github.com/rsertelon/spring-gwtrpc/tarball/master">TAR</a></li>
+          <li class="title">DOWNLOADS</li>
+        </nav>
+      </div><!-- end header -->
+
+    <div class="wrapper">
+
+      <section>
+        <div id="title">
+          <h1>Spring-gwtrpc</h1>
+          <p>Spring integration for GWT RPC services</p>
+          <hr>
+          <span class="credits left">Project maintained by <a href="https://github.com/rsertelon">rsertelon</a></span>
+          <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="https://twitter.com/michigangraham">mattgraham</a></span>
+        </div>
+
+        <h1>
+<a id="introduction" class="anchor" href="#introduction" aria-hidden="true"><span class="octicon octicon-link"></span></a>Introduction</h1>
+
+<p>Spring GWT-RPC is insprired by the <code>gwtrpc-spring</code> project. Its aim is to provide a simplified and updated version of the latter.</p>
+
+<h2>
+<a id="get-it" class="anchor" href="#get-it" aria-hidden="true"><span class="octicon octicon-link"></span></a>Get it</h2>
+
+<p>Spring GWT-RPC is released on Maven Central:</p>
+
+<div class="highlight highlight-xml"><pre>&lt;<span class="pl-ent">dependency</span>&gt;
+    &lt;<span class="pl-ent">groupId</span>&gt;fr.sertelon.spring&lt;/<span class="pl-ent">groupId</span>&gt;
+    &lt;<span class="pl-ent">artifactId</span>&gt;spring-gwtrpc&lt;/<span class="pl-ent">artifactId</span>&gt;
+    &lt;<span class="pl-ent">version</span>&gt;1.0.0&lt;/<span class="pl-ent">version</span>&gt;
+&lt;/<span class="pl-ent">dependency</span>&gt;</pre></div>
+
+<h2>
+<a id="features" class="anchor" href="#features" aria-hidden="true"><span class="octicon octicon-link"></span></a>Features</h2>
+
+<h3>
+<a id="dispatch-to-spring-beans" class="anchor" href="#dispatch-to-spring-beans" aria-hidden="true"><span class="octicon octicon-link"></span></a>Dispatch to Spring beans</h3>
+
+<p>Spring GWT-RPC provides a simple Servlet that extends <code>RemoteServiceServlet</code> to dispatch RPC requests to the required Spring beans.</p>
+
+<p>To use it you just have to declare this Servlet in the <code>web.xml</code> of your project:</p>
+
+<div class="highlight highlight-xml"><pre>&lt;<span class="pl-ent">servlet</span>&gt;
+    &lt;<span class="pl-ent">servlet-name</span>&gt;GWTService&lt;/<span class="pl-ent">servlet-name</span>&gt;
+    &lt;<span class="pl-ent">servlet-class</span>&gt;fr.sertelon.spring.gwtrpc.SpringRemoteServiceServlet&lt;/<span class="pl-ent">servlet-class</span>&gt;
+&lt;/<span class="pl-ent">servlet</span>&gt;
+&lt;<span class="pl-ent">servlet-mapping</span>&gt;
+    &lt;<span class="pl-ent">servlet-name</span>&gt;GWTService&lt;/<span class="pl-ent">servlet-name</span>&gt;
+    &lt;<span class="pl-ent">url-pattern</span>&gt;*.rpc&lt;/<span class="pl-ent">url-pattern</span>&gt;<span class="pl-c">&lt;!-- use the mapping that suits you most --&gt;</span>
+&lt;/<span class="pl-ent">servlet-mapping</span>&gt;</pre></div>
+
+<p>Then all you have to do is to declare your <code>RemoteServiceImpl</code> in your Spring configuration thanks to <code>@Component</code> annotation, or via XML configuration.</p>
+
+<h3>
+<a id="reverse-proxy-support-for-serialization-policy" class="anchor" href="#reverse-proxy-support-for-serialization-policy" aria-hidden="true"><span class="octicon octicon-link"></span></a>Reverse Proxy support for Serialization Policy</h3>
+
+<p>Spring GWT-RPC also provides out-of-the-box Reverse Proxy support for helping GWT find its <code>Serialization Policy</code>.</p>
+
+<p>Suppose you have the following RP configuration: <code>http://my.site/hello/gwtapp -&gt; http://localhost:8080/gwtapp</code>, GWT will complain about missing Serialization Policy because it will try to find it at <code>/hello/gwtapp/*.gwt.rpc</code> instead of <code>/gwtapp/*.gwt.rpc</code>.</p>
+
+<p>To solve this, Spring GWT-RPC uses the custom <code>X-GWT-Path-Prefix</code> header to strip the given prefix and help GWT find the Serialization Policy where it actually is.</p>
+
+<p>Here's a simple apache example:</p>
+
+<pre lang="httpd"><code>&lt;Virtualhost *:80&gt;
+  ServerName my.site
+
+  &lt;Proxy *&gt;
+    Order deny,allow
+    Allow from all
+  &lt;/Proxy&gt;
+
+  RequestHeader set X-GWT-Path-Prefix /hello
+
+  ProxyPass           /hello/gwtapp/ http://localhost:8080/gwtapp/
+  ProxyPassReverse    /hello/gwtapp/ http://localhost:8080/gwtapp/
+&lt;/Virtualhost&gt;
+</code></pre>
+
+<h2>
+<a id="license" class="anchor" href="#license" aria-hidden="true"><span class="octicon octicon-link"></span></a>License</h2>
+
+<p>This project is licensed under the Apache Software License v2.0</p>
+      </section>
+
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+    
+  </body>
+</html>
